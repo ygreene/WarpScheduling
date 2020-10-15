@@ -118,10 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NewWarps" xml:space="preserve">
-    <value>SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(DueDate) FROM manufacturing.`plan log` p
-WHere p.WarpProcessed =0
-Group by p.Warp_MO, p.Expr1
-Order by Warp_MO;</value>
+    <value>SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate) FROM manufacturing.`plan log` p
+Where p.WarpProcessed =0 and p.duedate is not null
+Group by p.Warp_MO, p.Expr1 
+Order by Warp_MO
+limit 200;</value>
   </data>
   <data name="WBIll" xml:space="preserve">
     <value>Select a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription From  (Select i.ItemNumber, i.ItemDescription, i.ItemKey, b.ComponentItemNumber , b.ComponentItemKey, b.RequiredQuantity

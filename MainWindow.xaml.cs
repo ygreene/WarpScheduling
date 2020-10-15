@@ -23,14 +23,16 @@ namespace WarpScheduling
         public MainWindow()
         {
             InitializeComponent();
-          //  WarpBill.FetchWarpBill();
+            //  WarpBill.FetchWarpBill();
+            Warp.FetchNewWarps();
+            listwarps.ItemsSource = Warp.Warps;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            WarpBill.FetchWarpBill();
-            Warp.FetchNewWarps();
-            System.Windows.Data.CollectionViewSource warpViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("warpViewSource")));
+           // WarpBill.FetchWarpBill();
+        //    Warp.FetchNewWarps();
+          //  System.Windows.Data.CollectionViewSource warpViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("warpViewSource")));
             // Load data by setting the CollectionViewSource.Source property:
             // warpViewSource.Source = [generic data source]
         }

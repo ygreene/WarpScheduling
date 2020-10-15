@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace WarpScheduling
 {
@@ -21,9 +22,10 @@ namespace WarpScheduling
 
         public static void FetchNewWarps()
         {
-            SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.mysql };
-            SqlCommand cmd = new SqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
-            SqlDataReader reader;
+
+            MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
+            MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
+            MySqlDataReader reader;
 
             try
             {
