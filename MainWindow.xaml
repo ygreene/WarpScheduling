@@ -91,10 +91,10 @@
             <TextBlock x:Name="warpStyleTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="-16,2,-78,4" Grid.Row="0" Text="{Binding WarpScheduling.Warp.WarpStyle}" VerticalAlignment="Center" Width="131"/>
         </Grid>-->
 
-        <ItemsControl x:Name="listwarps" >
+            <ItemsControl x:Name="listwarps" AlternationCount="2">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="0,0,0,5">
+                        <Grid x:Name="FooBar" Margin="0,0,0,5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="100" />
@@ -150,8 +150,15 @@
                             <TextBlock x:Name="warpStyleTextBlock"  Text="{Binding WarpStyle}"/>
                         </Grid>
                     </Grid>
-           
-                </DataTemplate>
+                        <DataTemplate.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                <Setter Property="Background" Value="Blue" TargetName="FooBar"/>
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="Red" TargetName="FooBar"/>
+                            </Trigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         </ScrollViewer>
