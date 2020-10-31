@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.SqlClient;
+
 
 namespace WarpScheduling
 {
@@ -23,10 +25,16 @@ namespace WarpScheduling
         public MainWindow()
         {
             InitializeComponent();
-            //  WarpBill.FetchWarpBill();
+             WarpBill.FetchWarpBill();
             Warp.FetchNewWarps();
-            listwarps.ItemsSource = Warp.Warps;
+            Warper.FetchWarpers();
+            WarpCustomers.FetchWarpCustomers();
+            listwarps.ItemsSource = Warp.Warps.OrderBy(w=> w.EarliestDueDate);
+            cb_Warper.ItemsSource = Warper.Warpers;
+
+              // listwarps.Items.IndexOf()
         }
+       
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -35,6 +43,11 @@ namespace WarpScheduling
           //  System.Windows.Data.CollectionViewSource warpViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("warpViewSource")));
             // Load data by setting the CollectionViewSource.Source property:
             // warpViewSource.Source = [generic data source]
+        }
+
+        private void btn_Save_Click(object sender, RoutedEventArgs e)
+        {
+          //save to db where Priority is not null and for the warper id
         }
     }
 }

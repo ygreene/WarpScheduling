@@ -1,159 +1,121 @@
-﻿<Window x:Class="WarpScheduling.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="WarpScheduling.MainWindow"
+        Title="MainWindow" Height="834" Width="1039" Loaded="Window_Loaded">
     <!--<Window.Resources>
         <CollectionViewSource x:Key="warpViewSource" d:DesignSource="{d:DesignInstance {x:Type local:Warps}, CreateList=True}"/>
     </Window.Resources>-->
-   
-    <Grid Margin="15,67,101,32">
-        <ScrollViewer HorizontalScrollBarVisibility="Auto">
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition Width="487*"/>
-            <ColumnDefinition Width="180*"/>
-            <ColumnDefinition Width="9*"/>
-        </Grid.ColumnDefinitions>
-        <Grid x:Name="grid1"  HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBox x:Name="priorityTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3,3,0,3" Grid.Row="0" Text="{Binding WarpScheduling.Warp.Priority, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="71"/>
-        </Grid>
-        <Grid x:Name="grid2"  HorizontalAlignment="Left" Margin="218,9,0,0" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-        </Grid>
-        <Grid x:Name="grid3"  HorizontalAlignment="Left" Margin="292,10,0,0" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-        </Grid>
-        <Grid x:Name="grid4" HorizontalAlignment="Left" Margin="443,9,0,0" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock x:Name="totalTicketsTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="-30,8,0,-2" Grid.Row="0" Text="{Binding WarpScheduling.Warp.TotalTickets}" VerticalAlignment="Center" Width="33"/>
-        </Grid>
-        <Grid x:Name="grid5"  HorizontalAlignment="Left" Margin="144,18,0,0" VerticalAlignment="Top" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-        </Grid>
-        <Grid x:Name="grid6"  HorizontalAlignment="Left" Margin="474,12,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <TextBlock x:Name="earliestDueDateTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="3,6,0,0" Grid.Row="0" Text="{Binding WarpScheduling.Warp.EarliestDueDate}" VerticalAlignment="Center"/>
-        </Grid>
-        <Grid x:Name="grid7" HorizontalAlignment="Left" Margin="107,15,0,0" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock x:Name="warpMOTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="3,3,-45,3" Grid.Row="0" Text="{Binding WarpScheduling.Warp.WarpMO}" VerticalAlignment="Center" Width="96"/>
-        </Grid>
-        <Grid x:Name="grid8"  HorizontalAlignment="Left" Margin="253,16,0,0" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock x:Name="warpStyleTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="-16,2,-78,4" Grid.Row="0" Text="{Binding WarpScheduling.Warp.WarpStyle}" VerticalAlignment="Center" Width="131"/>
-        </Grid>-->
 
-        <ItemsControl x:Name="listwarps" >
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,0,0,5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="100" />
-                        </Grid.ColumnDefinitions>
-                        <Grid x:Name="grid1"  HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBox x:Name="priorityTextBox"  Text="{Binding Priority, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
-                        </Grid>
-                        <Grid x:Name="grid4" HorizontalAlignment="Left" Margin="443,9,0,0" VerticalAlignment="Top">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock x:Name="totalTicketsTextBlock" Text="{Binding TotalTickets}" />
-                        </Grid>
-                        <Grid x:Name="grid6"  HorizontalAlignment="Left" Margin="474,12,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <TextBlock x:Name="earliestDueDateTextBlock" Text="{Binding EarliestDueDate}"/>
-                        </Grid>
-                        <Grid x:Name="grid7" HorizontalAlignment="Left" Margin="107,15,0,0" VerticalAlignment="Top">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock x:Name="warpMOTextBlock"  Text="{Binding WarpMO}" />
-                        </Grid>
-                        <Grid x:Name="grid8"  HorizontalAlignment="Left" Margin="253,16,0,0" VerticalAlignment="Top">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock x:Name="warpStyleTextBlock"  Text="{Binding WarpStyle}"/>
-                        </Grid>
-                    </Grid>
-           
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+
+    <Grid Margin="0,67,101,32" HorizontalAlignment="Right" Width="790" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="154*"/>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2" Margin="-121,0,46,84">
+            <ItemsControl x:Name="listwarps" AlternationCount="2" Width="950" >
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="LightGray"  BorderThickness="1">
+                            <Grid x:Name="FooBar" Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <Grid x:Name="grid1"  HorizontalAlignment="Left" Margin="13,10,0,0"  VerticalAlignment="Top" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox x:Name="priorityTextBox" Width="30" Text="{Binding Priority, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                </Grid>
+                                <Grid x:Name="grid4" HorizontalAlignment="Left" Margin="270,9,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="totalTicketsTextBlock" Text="{Binding TotalTickets}" />
+                                </Grid>
+                                <Grid x:Name="grid6"  HorizontalAlignment="Left" Margin="320,9,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="earliestDueDateTextBlock" Text="{Binding EarliestDueDate, StringFormat=d }"/>
+                                </Grid>
+                                <Grid x:Name="grid7" HorizontalAlignment="Left" Margin="95,9,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="warpMOTextBlock"  Text="{Binding WarpMO}" />
+                                </Grid>
+                                <!--<Grid x:Name="grid8"  HorizontalAlignment="Left" Margin="253,16,0,0" VerticalAlignment="Top">-->
+                                <Grid x:Name="grid8"  HorizontalAlignment="Left" Margin="180,9,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="warpStyleTextBlock"  Text="{Binding WarpStyle}"/>
+                                </Grid>
+                                <Grid x:Name="grid9" HorizontalAlignment="Left" Margin="450,9,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="yarnsColorsOfWarpTextBlock" Text="{Binding YarnColorsOfWarp}"/>
+                                </Grid>
+                                <Grid x:Name="grid10" HorizontalAlignment="Left" Margin="600,9,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox x:Name="notesTextBox" Width="150" Text="{Binding Notes ,Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                <Setter Property="Background" Value="White" TargetName="FooBar"/>
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="LightGray" TargetName="FooBar"/>
+                            </Trigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
+
+        <Label x:Name="Priority" Content="Priority" HorizontalAlignment="Left" Height="30" Margin="-117,-32,0,0" VerticalAlignment="Top" Width="51"/>
+        <Label x:Name="WarpMO" Content="Warp MO" HorizontalAlignment="Left" Height="30" Margin="-25,-32,0,0" VerticalAlignment="Top" Width="76"/>
+        <Label x:Name="WarpStyle" Content="Warp Style" HorizontalAlignment="Left" Height="30" Margin="65,-32,0,0" VerticalAlignment="Top" Width="75" Grid.ColumnSpan="2"/>
+        <Label x:Name="TotalTickets" Content="Tickets" HorizontalAlignment="Left" Height ="30" Margin="69,-32,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1"/>
+        <Label x:Name="DueDate" Content="Oldest Due Date" HorizontalAlignment="Left" Height ="30" Margin="129,-32,0,0" VerticalAlignment="Top" Width="105" Grid.Column="1"/>
+        <Label x:Name="Yarns" Content="Yarns" HorizontalAlignment="Left" Height="30" Margin="250,-32,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1"/>
+        <Label x:Name="Notes" Content="Notes" HorizontalAlignment="Center" Height="30" Margin="290,-32,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1"/>
+        <ComboBox x:Name="cb_Warper" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="645,-50,-82,0" VerticalAlignment="Top" Width="157" ItemsSource="{Binding Warpers}" SelectedValuePath="WarperID" DisplayMemberPath="WarperName"/>
+        <Button x:Name="btn_Save" Content="Save" Grid.Column="1" HorizontalAlignment="Left" Margin="720,20,-75,0" VerticalAlignment="Top" Width="75" Click="btn_Save_Click"/>
     </Grid>
 </Window>

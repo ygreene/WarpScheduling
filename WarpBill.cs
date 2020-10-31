@@ -48,5 +48,17 @@ namespace WarpScheduling
             finally { conn.Close(); conn.Dispose(); }
 
         }
+        public static string FetchWarpColors(string warpstyle)
+        {
+            String yarncolors = "";
+            var x = WarpBills.Where(w => w.WarpStyle == warpstyle);
+
+            foreach (var i in x )
+            {
+                yarncolors  += i.compcolor + "/";
+            }
+
+            return yarncolors.Substring (0,yarncolors.Length -1);
+        }
     }
 }

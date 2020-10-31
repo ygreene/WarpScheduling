@@ -119,16 +119,21 @@
   </resheader>
   <data name="NewWarps" xml:space="preserve">
     <value>SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate) FROM manufacturing.`plan log` p
-Where p.WarpProcessed =0 and p.duedate is not null
+Where p.WarpProcessed =0 and p.duedate is not null and p.duedate Not Like '0001-01-01%'
 Group by p.Warp_MO, p.Expr1 
-Order by Warp_MO
-limit 200;</value>
+Order by Warp_MO;</value>
   </data>
   <data name="WBIll" xml:space="preserve">
-    <value>Select a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription From  (Select i.ItemNumber, i.ItemDescription, i.ItemKey, b.ComponentItemNumber , b.ComponentItemKey, b.RequiredQuantity
+    <value>Select a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription, RequiredQuantity From  (Select i.ItemNumber, i.ItemDescription, i.ItemKey, b.ComponentItemNumber , b.ComponentItemKey, b.RequiredQuantity
 From dbo.FS_Item i  Inner Join dbo.FS_BillOfMaterial b on i.ItemKey=b.ParentItemKey
-Where i.ItemNumber Like 'WS%' ) a Inner Join dbo.FS_Item ii on a.ComponentItemKey=ii.ItemKey
-Where RequiredQuantity&gt;.0009
-Group by a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription</value>
+Where i.ItemNumber Like 'WS%' and i.ItemStatus &lt;&gt;'O' ) a Inner Join dbo.FS_Item ii on a.ComponentItemKey=ii.ItemKey
+Where RequiredQuantity&gt;.009 
+Group by a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription, RequiredQuantity</value>
+  </data>
+  <data name="WpMOCustomer" xml:space="preserve">
+    <value>Select Warp_MO,Customer, Item, Sum(Tickets) Ticket From
+manufacturing.`Plan Log`
+Where DueDate&gt; AddDate(CurDate(),Interval -180 Day)
+Group by Warp_MO, Customer, Item</value>
   </data>
 </root>
