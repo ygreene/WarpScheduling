@@ -121,7 +121,7 @@
     <value>SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate) FROM manufacturing.`plan log` p
 Where p.WarpProcessed =0 and p.duedate is not null and p.duedate Not Like '0001-01-01%'
 Group by p.Warp_MO, p.Expr1 
-Order by Warp_MO;</value>
+Order by Warp_MO LIMIT 200 ;</value>
   </data>
   <data name="WBIll" xml:space="preserve">
     <value>Select a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription, RequiredQuantity From  (Select i.ItemNumber, i.ItemDescription, i.ItemKey, b.ComponentItemNumber , b.ComponentItemKey, b.RequiredQuantity

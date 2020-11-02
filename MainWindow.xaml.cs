@@ -49,5 +49,11 @@ namespace WarpScheduling
         {
           //save to db where Priority is not null and for the warper id
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            dynamic listget = listwarps.SelectedItem as dynamic;
+            MessageBox.Show("Priority: " + listget.Priority + " WarpMO: " + listget.WarpMO + " WarpStyle:" + listget.WarpStyle +  " Tickets: " + listget.TotalTickets + " YarnColorsOfWarp:"+ listget.YarnColorsOfWarp +  " Notes:" + listget.Notes + " Row =" +  listwarps.SelectedIndex.ToString());
+        }
     }
 }

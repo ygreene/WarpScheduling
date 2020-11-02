@@ -3,9 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="WarpScheduling.MainWindow"
         Title="MainWindow" Height="834" Width="1039" Loaded="Window_Loaded">
-    <!--<Window.Resources>
-        <CollectionViewSource x:Key="warpViewSource" d:DesignSource="{d:DesignInstance {x:Type local:Warps}, CreateList=True}"/>
-    </Window.Resources>-->
+
+    <Window.Resources>
+        <Style  TargetType="{x:Type ListBoxItem}">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Background" Value="White"></Setter>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="LightGray"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
 
     <Grid Margin="0,67,101,32" HorizontalAlignment="Right" Width="790" >
@@ -14,8 +24,9 @@
             <ColumnDefinition Width="154*"/>
         </Grid.ColumnDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2" Margin="-121,0,46,84">
-            <ItemsControl x:Name="listwarps" AlternationCount="2" Width="950" >
-                <ItemsControl.ItemTemplate>
+
+            <ListBox x:Name="listwarps" AlternationCount="2" Width="950">
+                <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border BorderBrush="LightGray"  BorderThickness="1">
                             <Grid x:Name="FooBar" Margin="0,0,0,5">
@@ -95,17 +106,14 @@
                                 </Grid>
                             </Grid>
                         </Border>
-                        <DataTemplate.Triggers>
-                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                <Setter Property="Background" Value="White" TargetName="FooBar"/>
-                            </Trigger>
-                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                <Setter Property="Background" Value="LightGray" TargetName="FooBar"/>
-                            </Trigger>
-                        </DataTemplate.Triggers>
+
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+
+
         </ScrollViewer>
 
         <Label x:Name="Priority" Content="Priority" HorizontalAlignment="Left" Height="30" Margin="-117,-32,0,0" VerticalAlignment="Top" Width="51"/>
@@ -117,5 +125,6 @@
         <Label x:Name="Notes" Content="Notes" HorizontalAlignment="Center" Height="30" Margin="290,-32,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1"/>
         <ComboBox x:Name="cb_Warper" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="645,-50,-82,0" VerticalAlignment="Top" Width="157" ItemsSource="{Binding Warpers}" SelectedValuePath="WarperID" DisplayMemberPath="WarperName"/>
         <Button x:Name="btn_Save" Content="Save" Grid.Column="1" HorizontalAlignment="Left" Margin="720,20,-75,0" VerticalAlignment="Top" Width="75" Click="btn_Save_Click"/>
+        <Button Content="Get Selected item" Grid.Column="1" HorizontalAlignment="Left" Margin="720,70,-97,0" VerticalAlignment="Top" Width="97" Click="Button_Click"/>
     </Grid>
 </Window>

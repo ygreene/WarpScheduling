@@ -43,6 +43,7 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+              //    string valor = reader.GetString(0);
                     Warps.Add(new Warp() { WarpMO = reader.GetString(0), WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp="" });
                 }
             }

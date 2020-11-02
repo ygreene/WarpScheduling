@@ -58,7 +58,16 @@ namespace WarpScheduling
                 yarncolors  += i.compcolor + "/";
             }
 
-            return yarncolors.Substring (0,yarncolors.Length -1);
+            //erase this please and put  return yarncolors.Substring(0, yarncolors.Length - 1); 
+            if (yarncolors.Length == 0)
+            {
+                return yarncolors = "no data";
+            }
+            else
+            {
+                return yarncolors.Substring(0, yarncolors.Length - 1); 
+            }
+          
         }
     }
 }
