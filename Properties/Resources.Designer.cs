@@ -61,10 +61,10 @@ namespace WarpScheduling.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate) FROM manufacturing.`plan log` p
+        ///   Busca una cadena traducida similar a SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate) as duedate, p.JacorBase FROM manufacturing.`plan log` p
         ///Where p.WarpProcessed =0 and p.duedate is not null and p.duedate Not Like &apos;0001-01-01%&apos;
         ///Group by p.Warp_MO, p.Expr1 
-        ///Order by Warp_MO ;.
+        ///Order by Warp_MO LIMIT 200 ;.
         /// </summary>
         internal static string NewWarps {
             get {
