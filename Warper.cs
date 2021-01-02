@@ -13,6 +13,7 @@ namespace WarpScheduling
         public int WarperID { get; set; }
         public string WarperName { get; set; }
         public string  Model { get; set; }
+       public  List <string> WarpStylesIRun { get; set; }
 
 
         public static void FetchWarpers()
@@ -29,7 +30,7 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
-                    Warpers.Add(new Warper() { WarperID = reader.GetInt32(0), WarperName = reader.GetString(1), Model = reader.GetString(2) }); 
+                    Warpers.Add(new Warper() { WarperID = reader.GetInt32(0), WarperName = reader.GetString(1), Model = reader.GetString(2) , WarpStylesIRun=WarpStyles.FetchStylesByWarpID(reader.GetInt32(0))}); 
 
                 }
 

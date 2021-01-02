@@ -5,18 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
+using System.Windows;
+using System.ComponentModel;
 
 namespace WarpScheduling
 {
-    class Warp
+    class Warp :  INotifyPropertyChanged 
     {
-       public static List<Warp> Warps = new List<Warp>();
-        public int? Priority { get; set; }
+
+        public static List<Warp> Warps = new List<Warp>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        //private string _Notes;
+        //public string Notes { get { return _Notes; } set { _Notes = value; OnPropertyChanged(nameof(Notes)); } }
+        private int? _Priority;
+        public int? Priority { get { return _Priority; } set { _Priority = value;OnPropertyChanged(nameof(Priority)); } }
+
         public string WarpMO { get; set; }
         public string WarpStyle { get; set; }
         public int TotalTickets { get; set; }
         public DateTime EarliestDueDate { get; set; }
         private string _YarnColorsOfWarp;
+
+      
 
         public string YarnColorsOfWarp
         {
@@ -24,9 +37,28 @@ namespace WarpScheduling
             set { _YarnColorsOfWarp = WarpBill.FetchWarpColors(this.WarpStyle); }
         }
 
-       
-        public string Notes { get; set; }
 
+        public string Notes { get; set; }
+        public int? WarperID { get; set; }
+        public string IsRush { get { return WarpCustomers.CheckForRushedMO(this.WarpMO); } }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                int sr;
+                bool success = Int32.TryParse(MainWindow.main.cb_Warper.SelectedValue.ToString(), out sr);
+
+                if (success==true)
+                {
+                    this.WarperID = sr;
+                }
+              //  UpdatePlanLogNotes(this);
+            }
+
+
+        }
 
         public static void FetchNewWarps()
         {
@@ -43,41 +75,146 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-              //    string valor = reader.GetString(0);
-                    Warps.Add(new Warp() { WarpMO = reader.GetString(0), WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp="" });
+                    //    string valor = reader.GetString(0);
+                    Warps.Add(new Warp() { WarpMO = reader.GetString(0), WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp = "" });
                 }
             }
-            catch ( Exception ex)
+            catch (Exception ex)
             {
 
                 throw ex;
             }
             finally
             {
-                conn.Close();conn.Dispose();
+                conn.Close(); conn.Dispose();
             }
 
         }
-
-        public static void SavePriority(IEnumerable<Warp> SelectedWarps)
+        public static void FetchPriortizedWarps()
         {
+            SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.sti };
+            SqlCommand cmd = new SqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text, CommandText = Properties.Resources.PrioritizedWarps };
+            SqlDataReader reader;
 
+            try
+            {
+                conn.Open();
+                reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
+                while (reader.Read())
+                {
+                    Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = reader.GetInt32(3), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
+                }
+            }
+            catch (SqlException ex)
+            {
+
+                throw ex;
+            }
+            finally { conn.Close(); conn.Dispose(); }
+        }
+
+        public static void SavePriority(IEnumerable<Warp> SelectedWarps, int wpmachineid)
+        {
+            SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.sti };
+            SqlCommand cmd = new SqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
+          //  var x = wp.GroupBy(j => new { j.WarperID }).Select(group => new { warperid = group.Key.WarperID });
+            string x;
+            var wpid = SelectedWarps.GroupBy(j => new { j.WarperID }).Select(group => new { warperid=group.Key.WarperID });
+            foreach (var wid in wpid)
+            {
+                if (wid.warperid == null)
+                { }
+                else
+                { RemoveExistingPriorityforWarper(int.Parse(wid.warperid.ToString())); }
+            }
+           
+            try
+            {
+                conn.Open();
+
+                foreach (var i in SelectedWarps.Where (c=> c.WarperID != null))
+                {
+                    x = string.Format("Insert into dbo.t_WarpingPriority (Priority, Warp_MO, WarpStyle, RollsOnWarp, DueDate, Notes, WarperID) Values({0},'{1}','{2}',{3},'{4}','{5}',{6})", i.Priority, i.WarpMO, i.WarpStyle, i.TotalTickets, i.EarliestDueDate.ToShortDateString(), i.Notes, i.WarperID);
+                    cmd.CommandText = x;
+                    cmd.ExecuteNonQuery();
+                    UpdatePlanLogWarpToProcessed(i.WarpMO);
+                }
+                MessageBox.Show("Priority Saved!");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            { conn.Close(); conn.Dispose(); }
+        }
+        private static void UpdatePlanLogWarpToProcessed(string warpmo)
+        {
+            MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
+            MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
+
+            try
+            {
+                conn.Open();
+                cmd.CommandText = string.Format("Update Manufacturing.`Plan Log` Set WarpProcessed=1 Where Warp_MO='{0}'", warpmo);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally { conn.Close(); conn.Dispose(); }
+
+        }
+        private static void RemoveExistingPriorityforWarper(int wpmachineid)
+        {
             SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.sti };
             SqlCommand cmd = new SqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
 
+            string x;
+            string removeFromMachine = string.Format("Delete from dbo.t_WarpingPriority Where WarperID={0}", wpmachineid);
+
+            try
+            {
 
 
+                conn.Open();
+                cmd.CommandText = removeFromMachine;
+                cmd.ExecuteNonQuery();
 
 
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close(); conn.Dispose(); //Delay(5000); }
+            }
+            //private static bool Delay(int millisecond)
+            //{
 
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
+            //    bool flag = false;
+            //    while (!flag)
+            //    {
+            //        if (sw.ElapsedMilliseconds > millisecond)
+            //        {
+            //            flag = true;
+            //        }
+            //    }
+            //    sw.Stop();
+            //    return true;
 
-
-
+            //}
         }
 
-
     }
-
+}
     //    SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(DueDate) FROM manufacturing.`plan log` p
     //Group by p.Warp_MO, p.Expr1
     //Order by Warp_MO;
@@ -99,4 +236,4 @@ namespace WarpScheduling
     //       ,<DueDate, datetime,>
     //       ,<Notes, nvarchar(255),>
     //       ,<WarperID, int,>)
-}
+

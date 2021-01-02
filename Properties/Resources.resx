@@ -123,6 +123,22 @@ Where p.WarpProcessed =0 and p.duedate is not null and p.duedate Not Like '0001-
 Group by p.Warp_MO, p.Expr1 
 Order by Warp_MO ;</value>
   </data>
+  <data name="PrioritizedWarps" xml:space="preserve">
+    <value>SELECT [Priority]
+      ,[Warp_MO]
+      ,[WarpStyle]
+      ,[RollsOnWarp]
+      ,[DueDate]
+      ,[Notes]
+      ,[WarperID]
+  FROM [STI].[dbo].[t_WarpingPriority]</value>
+  </data>
+  <data name="RemoveFromRushTable" xml:space="preserve">
+    <value>Delete c
+  FROM[STI].[dbo].[ChaseListMOs] c Inner Join[FSDBMR].dbo.FS_MOHeader h on c.MONumber = h.MONumber Collate SQL_Latin1_General_CP1_CI_AS
+  Inner Join FSDBMR.dbo.FS_MOLine l on h.MOHeaderKey = l.MOHeaderKey
+  Where l.MOLineStatus = 5</value>
+  </data>
   <data name="WBIll" xml:space="preserve">
     <value>Select a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription, RequiredQuantity From  (Select i.ItemNumber, i.ItemDescription, i.ItemKey, b.ComponentItemNumber , b.ComponentItemKey, b.RequiredQuantity
 From dbo.FS_Item i  Inner Join dbo.FS_BillOfMaterial b on i.ItemKey=b.ParentItemKey
@@ -131,9 +147,9 @@ Where RequiredQuantity&gt;.009
 Group by a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription, RequiredQuantity</value>
   </data>
   <data name="WpMOCustomer" xml:space="preserve">
-    <value>Select Warp_MO,Customer, Item, Sum(Tickets) Ticket From
+    <value>Select Warp_MO,Customer,PriorityNumber, Item, Sum(Tickets) Ticket,DueDate , If(substring(MO_Number,3,1)='M','Market','')ismarket,Notes, MO_Number ,RefFinMO From
 manufacturing.`Plan Log`
 Where DueDate&gt; AddDate(CurDate(),Interval -180 Day)
-Group by Warp_MO, Customer, Item</value>
+Group by Warp_MO, Customer,PriorityNumber, Item,DueDate,If(substring(MO_Number,3,1)='M','Market',''),Notes</value>
   </data>
 </root>
