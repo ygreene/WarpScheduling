@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NewWarps" xml:space="preserve">
-    <value>SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate) FROM manufacturing.`plan log` p
+    <value>SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate)  FROM manufacturing.`plan log` p
 Where p.WarpProcessed =0 and p.duedate is not null and p.duedate Not Like '0001-01-01%'
 Group by p.Warp_MO, p.Expr1 
 Order by Warp_MO ;</value>
@@ -147,9 +147,9 @@ Where RequiredQuantity&gt;.009
 Group by a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription, RequiredQuantity</value>
   </data>
   <data name="WpMOCustomer" xml:space="preserve">
-    <value>Select Warp_MO,Customer,PriorityNumber, Item, Sum(Tickets) Ticket,DueDate , If(substring(MO_Number,3,1)='M','Market','')ismarket,Notes, MO_Number ,RefFinMO From
+    <value>Select Warp_MO,Customer,PriorityNumber, Item, Sum(Tickets) Ticket,DueDate , If(substring(MO_Number,3,1)='M','Market','')ismarket,Notes, MO_Number ,RefFinMO, Single_Double From
 manufacturing.`Plan Log`
 Where DueDate&gt; AddDate(CurDate(),Interval -180 Day)
-Group by Warp_MO, Customer,PriorityNumber, Item,DueDate,If(substring(MO_Number,3,1)='M','Market',''),Notes</value>
+Group by Warp_MO, Customer,PriorityNumber, Item,DueDate,If(substring(MO_Number,3,1)='M','Market',''),Notes, MO_Number, RefFinMO, Single_Double</value>
   </data>
 </root>

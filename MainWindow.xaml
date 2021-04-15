@@ -6,15 +6,18 @@
     Title="MainWindow" Height="834" Width="1039" Loaded="Window_Loaded">
 
     <Window.Resources>
-        <Style  TargetType="{x:Type ListBoxItem}">
+        <Style  TargetType="{x:Type ListBoxItem }" >
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                    <Setter Property="Background" Value="White"></Setter>
+                    <Setter Property="Background" Value="White" ></Setter>
+                    <!-- <Setter Property="IsTabStop" Value="False"></Setter>-->
                 </Trigger>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                     <Setter Property="Background" Value="LightGray"></Setter>
+                    <!--<Setter Property="IsTabStop" Value="False"></Setter>-->
                 </Trigger>
             </Style.Triggers>
+
         </Style>
         <local:IntToNullValueConverter x:Key="IntToNullValueConverter"/>
     </Window.Resources>
@@ -27,8 +30,8 @@
         </Grid.ColumnDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="2" Margin="-121,0,46,84">
 
-            <ListBox x:Name="listwarps" AlternationCount="2" Width="950" SelectionChanged="listwarps_SelectionChanged_1" KeyboardNavigation.TabNavigation="Continue">
-                <ListBox.ItemTemplate>
+            <ListBox x:Name="listwarps" AlternationCount="2" Width="950" SelectionChanged="listwarps_SelectionChanged_1" KeyboardNavigation.TabNavigation="Continue" >
+                <ListBox.ItemTemplate >
                     <DataTemplate>
                         <Border BorderBrush="LightGray"  BorderThickness="1">
                             <Grid x:Name="FooBar" Margin="0,0,0,5">
@@ -44,7 +47,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBox x:Name="priorityTextBox" Width="30" Text="{Binding Priority, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true ,Converter={StaticResource IntToNullValueConverter}}"/>
+                                    <TextBox x:Name="priorityTextBox" Width="30" Text="{Binding Priority, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true ,Converter={StaticResource IntToNullValueConverter}}" GotFocus="priorityTextBox_GotFocus"/>
 
                                 </Grid>
                                 <Grid x:Name="grid4" HorizontalAlignment="Left" Margin="290,9,0,0" VerticalAlignment="Top">
@@ -146,7 +149,7 @@
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding JKRush}" Value="True">
-                            <Setter Property="Background" Value="LightCoral" ></Setter>                            
+                            <Setter Property="Background" Value="LightCoral" ></Setter>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -166,9 +169,22 @@
 
         </DataGrid>
 
-        <CheckBox x:Name="cb_SortChad" Content="Chad Sort&#xD;&#xA;" Grid.Column="1" HorizontalAlignment="Left" Margin="440,-50,0,0" VerticalAlignment="Top" Height="20"/>
-        <Button x:Name="button" Content="Re-Sort" Grid.Column="1" HorizontalAlignment="Left" Margin="721,70,-75,0" VerticalAlignment="Top" Width="74" Height="20"/>
-        <Button x:Name="btn_Exit" Content="Exit" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="721,185,-75,0" VerticalAlignment="Top" Width="74"/>
+        <CheckBox x:Name="cb_SortChad" Content="Chad Sort&#xD;&#xA;" Grid.Column="1" HorizontalAlignment="Left" Margin="722,-14,-74,0" VerticalAlignment="Top" Height="20"/>
+        <Button x:Name="btn_ReSort" Content="Re-Sort" Grid.Column="1" HorizontalAlignment="Left" Margin="721,70,-75,0" VerticalAlignment="Top" Width="74" Height="20" Click="btn_ReSort_Click" />
+        <Button x:Name="btn_Exit" Content="Exit" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="721,330,-75,0" VerticalAlignment="Top" Width="74" Click="btn_Exit_Click"/>
         <Button x:Name="btn_Export" Content="Export Priority" Grid.Column="1" HorizontalAlignment="Left" Margin="719,115,-75,0" VerticalAlignment="Top" Width="76" Height="45" Click="btn_Export_Click"/>
+        <TextBox x:Name="tb_Item" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="284,-55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="194"/>
+        <Button x:Name="btn_Filter" Content="Apply" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="489,-53,0,0" VerticalAlignment="Top" Width="40" Click="btn_Filter_Click"/>
+        <ComboBox x:Name="cb_Customer" Grid.Column="1" HorizontalAlignment="Left" Margin="59,-55,0,0" VerticalAlignment="Top" Width="181" ItemsSource="{Binding Customer}" SelectedValuePath="CustomerID" DisplayMemberPath="CustomerName">
+
+        </ComboBox>
+        <Label x:Name="label" Content="Customer" HorizontalAlignment="Right" Height="25" Margin="0,-57,665,0" VerticalAlignment="Top" Width="62" Grid.ColumnSpan="2"/>
+        <Label x:Name="label1" Content="Item" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="250,-57,0,0" VerticalAlignment="Top" Width="40"/>
+        <Button x:Name="btn_Clear" Content="Clear" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="539,-53,0,0" VerticalAlignment="Top" Width="37" Click="btn_Clear_Click"/>
+        <TextBox x:Name="tb_WarpFilter" HorizontalAlignment="Left" Height="25" Margin="-61,-56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="117"/>
+        <Label x:Name="label2" Content="Warp Mo" HorizontalAlignment="Left" Height="25" Margin="-130,-55,0,0" VerticalAlignment="Top" Width="64"/>
+        <Button x:Name="btn_RemoveMO" Content="Remove MO" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="722,174,-74,0" VerticalAlignment="Top" Width="72" Click="btn_RemoveMO_Click"/>
+        <Button x:Name="btn_ResetMO" Content="Reset MO" Grid.Column="1" HorizontalAlignment="Left" Height="30" Margin="722,219,-74,0" VerticalAlignment="Top" Width="72" Click="btn_ResetMO_Click"/>
+        <Button x:Name="btn_ExtAll" Content="Export All" Grid.Column="1" HorizontalAlignment="Left" Height="35" Margin="722,265,-74,0" VerticalAlignment="Top" Width="72" Click="btn_ExtAll_Click"/>
     </Grid>
 </Window>

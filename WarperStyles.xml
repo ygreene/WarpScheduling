@@ -1,23 +1,18 @@
 <Warpers>
 <!--Jaquard on Waper ID 1-->
-<Warper Id ="1">
+  <Id>1</Id>
 <WarpStyle>WS1000</WarpStyle>
-</Warper>
-<Warper Id ="1">
+  <Id>1</Id>
 <WarpStyle>WS1001</WarpStyle>
-</Warper>
-<Warper Id ="1">
+  <Id>1</Id>
 <WarpStyle>WS1002</WarpStyle>
-</Warper>
-<Warper Id ="1">
+  <Id>1</Id>
 <WarpStyle>WS1003</WarpStyle>
-</Warper>
-<Warper Id ="1">
+  <Id>1</Id>
 <WarpStyle>WS1004</WarpStyle>
-</Warper>
-<Warper Id ="1">
+  <Id>1</Id>
 <WarpStyle>WS1005</WarpStyle>
-</Warper>
+  <Id>1</Id>
 <Warper Id ="1">
 <WarpStyle>WS1006</WarpStyle>
 </Warper>
@@ -38,20 +33,45 @@
 </Warper>
   <Warper Id="1">
     <WarpStyle>WS1035</WarpStyle>
-    
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1037</WarpStyle>
+  </Warper>
     <WarpStyle>WS1039</WarpStyle>
+  <Warper Id="1">
     <WarpStyle>WS1040</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1041</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1049</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1055</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1056</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1057</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1059</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1060</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1061</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1062</WarpStyle>
+  </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1063</WarpStyle>
+    </Warper>
+  <Warper Id="1">
     <WarpStyle>WS1064</WarpStyle>
   </Warper>
 <!--1/4 Count on Warper ID 1 and 2-->
@@ -558,7 +578,7 @@
 <Id>4</Id>
 <WarpStyle>WS9025</WarpStyle>
 <Id>3</Id>
-<WarpStyle>WS90026</WarpStyle>
+<WarpStyle>WS9026</WarpStyle>
 <Id>4</Id>
 <WarpStyle>WS9026</WarpStyle>
 <Id>3</Id>

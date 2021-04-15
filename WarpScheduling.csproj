@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Customer.cs" />
     <Compile Include="ExcelReport.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IntToNullValueConverter.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="WarpBill.cs" />
     <Compile Include="WarpCustomers.cs" />
     <Compile Include="Warper.cs" />
+    <Compile Include="WarpInventory.cs" />
     <Compile Include="WarpStyles.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -25,6 +25,7 @@ namespace WarpScheduling
         private string _Notes;
         public string Notes { get { return _Notes; } set {_Notes=value;  OnPropertyChanged(nameof(Notes)); } }
        public  bool  JKRush  { get { return MORush.IsMOARush(this.FinishMO); }  }
+        public string SingleDouble { get; set; }
 
 
         internal static string CheckForRushedMO(string WrpMO)
@@ -48,7 +49,19 @@ namespace WarpScheduling
 
             }
 
-            private void UpdatePlanLogNotes(WarpCustomers warpCustomers)
+        internal static int GetStyleChanges(string warpMO)
+        {
+            var x = WrpCustomers.Where(c => c.WarpMO == warpMO).OrderBy(g=> g.Priority);
+            return x.LastOrDefault().Priority ;
+        }
+
+        internal static string GetSingleDouble(string warpMO)
+        {
+            var x = WrpCustomers.Where(c => c.WarpMO == warpMO);
+            return x.ElementAt(0).SingleDouble;
+        }
+
+        private void UpdatePlanLogNotes(WarpCustomers warpCustomers)
         {
             MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
             MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
@@ -79,7 +92,7 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
-                    WrpCustomers.Add(new WarpCustomers() { WarpMO = reader.GetString(0), Customer = reader.GetString(1), Priority=reader.GetInt32(2),ItemNumber = reader.GetString(3), Tickets = reader.GetInt32(4) ,DueDate=reader.GetDateTime(5), MarketOrder=reader.GetString(6), Notes=reader .GetString (7), FinishMO=reader.GetString(8)});
+                    WrpCustomers.Add(new WarpCustomers() { WarpMO = reader.GetString(0), Customer = reader.GetString(1), Priority=reader.GetInt32(2),ItemNumber = reader.GetString(3), Tickets = reader.GetInt32(4) ,DueDate=reader.GetDateTime(5), MarketOrder=reader.GetString(6), Notes=reader .GetString (7), FinishMO=reader.GetString(8), SingleDouble=reader.GetString(10)});
                 
                 }
             }

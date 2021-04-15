@@ -30,12 +30,13 @@ namespace WarpScheduling
             MORush.FetchMORushList();
             WarpStyles.fetchWarperStyles();
             WarpBill.FetchWarpBill();
+            Warp.FetchPriortizedWarps();  // needs to run this before fetching new warps.  
             Warp.FetchNewWarps();
-            Warp.FetchPriortizedWarps();
-            Warper.FetchWarpers();
+           Warper.FetchWarpers();
             WarpCustomers.FetchWarpCustomers();
            // listwarps.ItemsSource = Warp.Warps.OrderBy(w=> w.WarpStyle).ThenBy(w=> w.EarliestDueDate).ThenBy(w=> w.WarpMO);
             cb_Warper.ItemsSource = Warper.Warpers;
+            cb_Customer.ItemsSource = Customer.FetchCustomers();
 
               // listwarps.Items.IndexOf()
         }
@@ -48,14 +49,21 @@ namespace WarpScheduling
 
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
+            if (cb_Warper.Text.Length==0)
+            {
+                MessageBox.Show("Please Choose a Warper !");
+                return; }
+           WarpInventory. FetchCurrentWarpInv();
             IEnumerable<Warp> WarpPriority;
             //foreach ( )
-            WarpPriority=Warp.Warps.Where(c => c.Priority > 0);
+            WarpPriority=Warp.Warps.Where(c => c.Priority > 0 && c.WarperID==Warper.FetchWarperIDFromWarpName(cb_Warper.Text )); //fetch warperid
             dynamic wpget = cb_Warper.SelectedItem as dynamic;
             //save to db where Priority is not null and for the warper id
             Warp.SavePriority(WarpPriority, wpget.WarperID);
+
             
         }
+       
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -68,9 +76,18 @@ namespace WarpScheduling
         private void listwarps_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
             // MessageBox.Show(e.AddedItems );
-            dynamic listget = e.AddedItems as dynamic;
-            WarpDetail.ItemsSource = WarpCustomers.WrpCustomers.Where(c => c.WarpMO == listget[0].WarpMO).OrderBy(c => c.Priority).ToList();
+             dynamic listget = e.AddedItems as dynamic;
+            if (e.AddedItems.Count ==0)
+            {
+                MessageBox.Show("Please choose an item that runs on this warper!");
+                return;
+            }
 
+            WarpDetail.ItemsSource = WarpCustomers.WrpCustomers.Where(c => c.WarpMO == listget[0].WarpMO).OrderBy(c => c.Priority).ToList();
+          //  MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+
+            //TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+            //MoveFocus(request);
         }
 
         private void cb_Warper_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -78,18 +95,40 @@ namespace WarpScheduling
             int x = int.Parse(cb_Warper.SelectedValue.ToString());
            
            List <string> m= Warper.Warpers.Where(j => j.WarperID == x).ElementAt(0).WarpStylesIRun;
-            var g = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle)).OrderBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+           // var g = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle)).OrderBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
             //listwarps.ItemsSource = Warp.Warps.Where (w=> m.Any(r=> r==w.WarpStyle)).OrderBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+          if (x<5)
+            {
             if (cb_SortChad.IsChecked==true)
             {
-                listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderBy(w => w.Priority).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    //  List<Warp> lwarpsource= Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+                    List<Warp> lwarpsource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenByDescending(w => w.IsRush).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+                    listwarps.ItemsSource = lwarpsource;// Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority*-1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
                 listwarps.IsSynchronizedWithCurrentItem = true;
             }
             else
             { 
-                listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID ==null)).OrderByDescending(w => w.Priority ).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
-                listwarps.IsSynchronizedWithCurrentItem = true;
+               // listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID ==null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority*-1 ).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenByDescending(w=> w.IsRush).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.IsSynchronizedWithCurrentItem = true;
             }
+            }
+          else
+            {
+                if (cb_SortChad.IsChecked == true)
+                {
+                    List<Warp> lwarpsource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && (w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenByDescending(w=> w.IsRush).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+
+                    listwarps.ItemsSource = lwarpsource;// Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority*-1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.IsSynchronizedWithCurrentItem = true;
+                }
+                else
+                {
+                    listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && (w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenByDescending(w => w.IsRush).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.IsSynchronizedWithCurrentItem = true;
+                }
+            }
+
         }
 
         private void btn_UpdateNotes_Click(object sender, RoutedEventArgs e)
@@ -103,6 +142,147 @@ namespace WarpScheduling
             WarpPriority = Warp.Warps.Where(c => c.Priority > 0).ToList();
             ExcelReport.CreateSpreadSheet(WarpPriority,"Wpriority.xlsx");
             MessageBox.Show("Priority Exported!");
+        }
+
+        private void btn_ReSort_Click(object sender, RoutedEventArgs e)
+        {
+            int x = int.Parse(cb_Warper.SelectedValue.ToString());
+
+            List<string> m = Warper.Warpers.Where(j => j.WarperID == x).ElementAt(0).WarpStylesIRun;
+            // var g = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle)).OrderBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+            //listwarps.ItemsSource = Warp.Warps.Where (w=> m.Any(r=> r==w.WarpStyle)).OrderBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+            if (x < 5)
+            {
+                if (cb_SortChad.IsChecked == true)
+                {
+                    List<Warp> lwarpsource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+
+                    listwarps.ItemsSource = lwarpsource;// Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority*-1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.IsSynchronizedWithCurrentItem = true;
+                }
+                else
+                {
+                    listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.IsSynchronizedWithCurrentItem = true;
+                }
+            }
+            else
+            {
+                if (cb_SortChad.IsChecked == true)
+                {
+                    List<Warp> lwarpsource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && (w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+
+                    listwarps.ItemsSource = lwarpsource;// Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority*-1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.IsSynchronizedWithCurrentItem = true;
+                }
+                else
+                {
+                    listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && (w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.IsSynchronizedWithCurrentItem = true;
+                }
+            }
+            //if (cb_SortChad.IsChecked == true)
+            //{
+            //    List<Warp> lwarpsource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+
+            //    listwarps.ItemsSource = lwarpsource;// Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority*-1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+            //    listwarps.IsSynchronizedWithCurrentItem = true;
+            //}
+            //else
+            //{
+            //    listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+            //    listwarps.IsSynchronizedWithCurrentItem = true;
+            //}
+        }
+
+        private void btn_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btn_Filter_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> wp;
+            if(cb_Warper.Text.Length==0)
+            { MessageBox.Show("Please choose warper !");
+                return;
+            }
+            int x = int.Parse(cb_Warper.SelectedValue.ToString());
+            List<string> m = Warper.Warpers.Where(j => j.WarperID == x).ElementAt(0).WarpStylesIRun;
+
+            List<Warp> lwarpsource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority * -1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+           if(tb_WarpFilter.Text.Length >0)
+            {
+                wp = WarpCustomers.WrpCustomers.Where(c => c.WarpMO == tb_WarpFilter .Text).Select(j => j.WarpMO).ToList<string>();
+            }
+           else if(tb_Item .Text.Length ==0)
+            {
+                wp = WarpCustomers.WrpCustomers.Where(c => c.Customer == cb_Customer.Text).Select(j => j.WarpMO).ToList<string>();
+            }
+            else
+            {               
+              wp = WarpCustomers.WrpCustomers.Where(c => c.Customer == cb_Customer.Text && c.ItemNumber == tb_Item.Text).Select(j => j.WarpMO).ToList<string>();
+            }
+           
+            
+            listwarps.ItemsSource = lwarpsource.Where (r=> wp.Any(z=> z==r.WarpMO ));// Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority*-1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+            listwarps.IsSynchronizedWithCurrentItem = true;
+        }
+
+        private void btn_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            cb_Customer.Text="";
+            tb_Item.Text = "";
+            tb_WarpFilter.Text = "";
+            cb_Warper_SelectionChanged(cb_Warper,null);
+        }
+
+        private void priorityTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (sender as TextBox);
+            if (tb!=null)
+            {
+                e.Handled = true;
+                tb.Focus();
+                tb.SelectAll();
+
+            }
+        }
+
+        private void listwarps_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Style_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btn_RemoveMO_Click(object sender, RoutedEventArgs e)
+        {
+            Warp.RemoveExistingPriorityforWarpMO(tb_WarpFilter.Text);
+        }
+
+        private void btn_ResetMO_Click(object sender, RoutedEventArgs e)
+        {
+            Warp.UpdatePlanLogWarpToUnProcessed(tb_WarpFilter.Text);
+            Warp.RemoveExistingPriorityforWarpMO(tb_WarpFilter .Text);
+            Warp.Warps.RemoveAll(w => w.WarpMO == tb_WarpFilter.Text);        }
+
+        private void btn_ExtAll_Click(object sender, RoutedEventArgs e)
+        {
+
+            int x = int.Parse(cb_Warper.SelectedValue.ToString());
+
+            List<string> m = Warper.Warpers.Where(j => j.WarperID == x).ElementAt(0).WarpStylesIRun;
+
+
+            List<Warp> WarpPriority = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority * -1).ThenByDescending(w => w.IsRush).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO).ToList<Warp>();
+            //List<Warp> WarpPriority;
+            //WarpPriority = Warp.Warps.ToList();
+            ExcelReport.CreateSpreadSheetAll(WarpPriority, "WpriorityAll.xlsx", (WarpScheduling.ExcelReport.Wpr)Warper.FetchWarperIDFromWarpName(cb_Warper .Text));
+            MessageBox.Show("All Exported!");
         }
     }
         

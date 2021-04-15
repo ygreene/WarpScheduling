@@ -16,6 +16,15 @@ namespace WarpScheduling
        public  List <string> WarpStylesIRun { get; set; }
 
 
+        public static int FetchWarperIDFromWarpName(string WarpName)
+        {
+           if (WarpName.Length>0 )
+            {
+                return Warpers.Where(c => c.WarperName == WarpName).ElementAt(0).WarperID;
+            }
+           else
+            { return 0; }
+        }
         public static void FetchWarpers()
         {
             SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.sti };
