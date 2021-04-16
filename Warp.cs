@@ -73,8 +73,9 @@ namespace WarpScheduling
                 conn.Open();
                 cmd.CommandText = string.Format("Select p.Warp_MO,p.WarpProcessed From manufacturing.`Plan Log` p Where p.Warp_MO ='{0}' and WarpProcessed = 1", warpmofilter);
                 reader = cmd.ExecuteReader();
-               if (reader.HasRows==true)
-                {                    isprocessed = true;                }
+                if (reader.HasRows == true)
+                                    { Console.WriteLine(warpmofilter);
+                                      isprocessed = true;                }
 
                 return isprocessed;
             }
@@ -93,7 +94,7 @@ namespace WarpScheduling
             MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
             MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
             MySqlDataReader reader;
-
+            string wpmo;
             try
             {
                 conn.Open();
@@ -102,14 +103,19 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+                    wpmo = reader.GetString(0);
 
-                    if (HasWarpBeenProcessed(reader.GetString(0))==true)
+                    Console.WriteLine(wpmo);
+                    
+                    if (HasWarpBeenProcessed(wpmo) == true)
                     {
-                        UpdatePlanLogWarpToProcessed(reader.GetString(0));
+
+                        Console.WriteLine(String.Format("Updating '{0}' to processed", wpmo));
+                         UpdatePlanLogWarpToProcessed(wpmo);
                     }
                     else
-                    { 
-                    Warps.Add(new Warp() { WarpMO = reader.GetString(0), WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp = "" });
+                    {
+                        Warps.Add(new Warp() { WarpMO = wpmo, WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp = "" });
                     }
                 }
             }
