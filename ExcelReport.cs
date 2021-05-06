@@ -12,10 +12,10 @@ namespace WarpScheduling
         public  enum Wpr
         {
             BlueWarper1=1,
-            GreenWarper2,
-            BlueWarper3,
-            BlueWarper4,
-            BlueWaper5
+            GreenWarper2=2,
+            BlueWarper3=3,
+            BlueWarper4=4,
+            BlueWarper5=5
         }
         internal static void CreateSpreadSheet(List<Warp> wp , string docname)
         {

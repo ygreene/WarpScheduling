@@ -215,16 +215,27 @@ namespace WarpScheduling
             {
                 wp = WarpCustomers.WrpCustomers.Where(c => c.WarpMO == tb_WarpFilter .Text).Select(j => j.WarpMO).ToList<string>();
             }
-           else if(tb_Item .Text.Length ==0)
+           else if (tb_Item.Text.StartsWith("WS"))
+            {
+                wp =lwarpsource.Where(w=> w.WarpStyle ==tb_Item.Text ).Select(j => j.WarpMO).ToList<string>();
+            }
+            else if (tb_Item.Text.Length > 0 && cb_Customer.Text.Length > 0)
+            {
+                wp = WarpCustomers.WrpCustomers.Where(c => c.Customer == cb_Customer.Text && c.ItemNumber == tb_Item.Text).Select(j => j.WarpMO).ToList<string>();
+            }
+            else if(cb_Customer .Text.Length>0)
             {
                 wp = WarpCustomers.WrpCustomers.Where(c => c.Customer == cb_Customer.Text).Select(j => j.WarpMO).ToList<string>();
             }
-            else
-            {               
-              wp = WarpCustomers.WrpCustomers.Where(c => c.Customer == cb_Customer.Text && c.ItemNumber == tb_Item.Text).Select(j => j.WarpMO).ToList<string>();
+                      else if (tb_Item.Text.Length > 0)
+            {
+                wp = WarpCustomers.WrpCustomers.Where(c => c.ItemNumber == tb_Item.Text).Select(j => j.WarpMO).ToList<string>();
             }
-           
-            
+            else
+            {
+                wp = WarpCustomers.WrpCustomers.Where(c => c.ItemNumber.Contains("-F")).Select(j => j.WarpMO).ToList<string>(); ;
+            }
+        
             listwarps.ItemsSource = lwarpsource.Where (r=> wp.Any(z=> z==r.WarpMO ));// Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null)).OrderByDescending(w => w.Priority*-1).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
             listwarps.IsSynchronizedWithCurrentItem = true;
         }
@@ -267,7 +278,7 @@ namespace WarpScheduling
         private void btn_ResetMO_Click(object sender, RoutedEventArgs e)
         {
             Warp.UpdatePlanLogWarpToUnProcessed(tb_WarpFilter.Text);
-            Warp.RemoveExistingPriorityforWarpMO(tb_WarpFilter .Text);
+            Warp.RemoveExistingPriorityforWarpMO2(tb_WarpFilter .Text);
             Warp.Warps.RemoveAll(w => w.WarpMO == tb_WarpFilter.Text);        }
 
         private void btn_ExtAll_Click(object sender, RoutedEventArgs e)

@@ -8,11 +8,13 @@ using MySql.Data.MySqlClient;
 using System.Diagnostics;
 using System.Windows;
 using System.ComponentModel;
+using System.IO;
 
 namespace WarpScheduling
 {
     class Warp :  INotifyPropertyChanged 
     {
+       internal static StreamWriter mywriter = new StreamWriter(@"c:\STIRoot\WarpScheduling");
 
         public static List<Warp> Warps = new List<Warp>();
 
@@ -70,12 +72,20 @@ namespace WarpScheduling
             MySqlDataReader reader;
             try
             {
+
+                //if (warpmofilter=="A52914")
+                //{
+                //    Console.WriteLine("Got it");
+                //}
                 conn.Open();
                 cmd.CommandText = string.Format("Select p.Warp_MO,p.WarpProcessed From manufacturing.`Plan Log` p Where p.Warp_MO ='{0}' and WarpProcessed = 1", warpmofilter);
                 reader = cmd.ExecuteReader();
-                if (reader.HasRows == true)
-                                    { Console.WriteLine(warpmofilter);
-                                      isprocessed = true;                }
+                if (reader.HasRows==true)
+                                    {
+                    mywriter.WriteLine(string.Format("Warp '{0}' has been processed at HasWarpBeenProcessed!", warpmofilter));
+                    Console.WriteLine(warpmofilter);
+                                      isprocessed = true;     
+                }
 
                 return isprocessed;
             }
@@ -94,6 +104,7 @@ namespace WarpScheduling
             MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
             MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
             MySqlDataReader reader;
+
             string wpmo;
             try
             {
@@ -104,14 +115,17 @@ namespace WarpScheduling
                 while (reader.Read())
                 {
                     wpmo = reader.GetString(0);
-
-                    Console.WriteLine(wpmo);
+                    //if (reader.GetString(0)=="T26719")
+                    //{
+                    //    Console.WriteLine(wpmo);
+                    //}
+                  //  Console.WriteLine(wpmo);
                     
                     if (HasWarpBeenProcessed(wpmo) == true)
                     {
 
                         Console.WriteLine(String.Format("Updating '{0}' to processed", wpmo));
-                         UpdatePlanLogWarpToProcessed(wpmo);
+                         UpdatePlanLogWarpToProcessed(wpmo); // take long time 
                     }
                     else
                     {
@@ -148,7 +162,8 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
-                    UpdatePlanLogWarpToProcessed(reader.GetString(1)); // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
+                    mywriter.WriteLine(string.Format("Warp '{0}' has been processed at GetPioritizedWarp!", reader.GetString(1)));
+                    UpdatePlanLogWarpToProcessed(reader.GetString(1)); // take long time // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
                     Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = reader.GetInt32(3), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
                 }
             }
@@ -267,7 +282,34 @@ namespace WarpScheduling
                 conn.Close(); conn.Dispose(); //Delay(5000); }
             }
         }
-            private static void RemoveExistingPriorityforWarper(int wpmachineid)
+        internal static void RemoveExistingPriorityforWarpMO2(String wpMo)
+        {
+            SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.sti };
+            SqlCommand cmd = new SqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
+
+            // string x;
+            string removeFromMachine = string.Format("Delete from dbo.t_WarpingPriority Where Warp_MO='{0}'", wpMo);
+
+            try
+            {
+
+
+                conn.Open();
+                cmd.CommandText = removeFromMachine;
+                cmd.ExecuteNonQuery();
+               // Warp.UpdatePlanLogWarpToProcessed(wpMo);
+                MessageBox.Show("Removed");
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close(); conn.Dispose(); //Delay(5000); }
+            }
+        }
+        private static void RemoveExistingPriorityforWarper(int wpmachineid)
         {
             SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.sti };
             SqlCommand cmd = new SqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
