@@ -13,8 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
-using DevExpress.Xpf.Printing;
-using DevExpress.XtraPrinting;
+
 
 namespace WarpScheduling
 {
@@ -295,20 +294,6 @@ namespace WarpScheduling
             //WarpPriority = Warp.Warps.ToList();
             ExcelReport.CreateSpreadSheetAll(WarpPriority, "WpriorityAll.xlsx", (WarpScheduling.ExcelReport.Wpr)Warper.FetchWarperIDFromWarpName(cb_Warper .Text));
             MessageBox.Show("All Exported!");
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            this.Cursor = Cursors.Wait;
-            // Invoke the standard Print Preview window modally.
-            ReportWarpS report = new ReportWarpS();
-            XlsxExportOptions xlsxOptions = report.ExportOptions.Xlsx;
-            report.RollPaper = true;
-            xlsxOptions.ShowGridLines = true;
-            xlsxOptions.TextExportMode = TextExportMode.Value;
-            xlsxOptions.ExportMode = XlsxExportMode.SingleFilePageByPage;
-            PrintHelper.ShowPrintPreviewDialog(this, report);
-            this.Cursor = Cursors.Arrow;
         }
     }
         

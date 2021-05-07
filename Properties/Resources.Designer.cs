@@ -64,7 +64,7 @@ namespace WarpScheduling.Properties {
         ///   Looks up a localized string similar to SELECT p.Warp_MO, p.Expr1, Sum(p.Tickets) TotalRolls, Min(p.DueDate)  FROM manufacturing.`plan log` p
         ///Where p.WarpProcessed =0 and p.duedate is not null and p.duedate Not Like &apos;0001-01-01%&apos;
         ///Group by p.Warp_MO, p.Expr1 
-        ///Order by Warp_MO LIMIT 200 ;.
+        ///Order by Warp_MO ;.
         /// </summary>
         internal static string NewWarps {
             get {
