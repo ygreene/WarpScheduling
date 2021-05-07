@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
-using MySql.Data.MySqlClient;
-using System.Diagnostics;
 using System.Windows;
 using System.ComponentModel;
 using System.IO;
+using MySqlConnector;
 
 namespace WarpScheduling
 {
@@ -110,7 +107,7 @@ namespace WarpScheduling
             {
                 conn.Open();
                 cmd.CommandText = Properties.Resources.NewWarps;
-
+                List<string> listwarpmo = new List<string>();
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -125,13 +122,18 @@ namespace WarpScheduling
                     {
 
                         Console.WriteLine(String.Format("Updating '{0}' to processed", wpmo));
-                         UpdatePlanLogWarpToProcessed(wpmo); // take long time 
+                       // UpdatePlanLogWarpToProcessed(wpmo); // take long time 
+                        listwarpmo.Add(wpmo);
                     }
                     else
                     {
                         Warps.Add(new Warp() { WarpMO = wpmo, WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp = "" });
                     }
                 }
+                if (listwarpmo.Count > 0)
+                {
+                    UpdatePlanLogWarpToProcessedall(string.Join("','", listwarpmo)); 
+                } // take long time solution
             }
             catch (Exception ex)
             {
@@ -158,14 +160,19 @@ namespace WarpScheduling
 
             try
             {
+                List<string> listwarpmo = new List<string>();
                 conn.Open();
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
+               
+             
                 while (reader.Read())
                 {
                     mywriter.WriteLine(string.Format("Warp '{0}' has been processed at GetPioritizedWarp!", reader.GetString(1)));
-                    UpdatePlanLogWarpToProcessed(reader.GetString(1)); // take long time // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
+                    // UpdatePlanLogWarpToProcessed(reader.GetString(1)); // take long time // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
+                    listwarpmo.Add(reader.GetString(1));
                     Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = reader.GetInt32(3), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
                 }
+                UpdatePlanLogWarpToProcessedall(string.Join("','", listwarpmo)); // take long time solution // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
             }
             catch (SqlException ex)
             {
@@ -235,7 +242,26 @@ namespace WarpScheduling
             finally { conn.Close(); conn.Dispose(); }
 
         }
-      internal static void UpdatePlanLogWarpToUnProcessed(string warpmo)
+        private static void UpdatePlanLogWarpToProcessedall(string warpmo)
+        {
+            MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
+            MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
+
+            try
+            {
+                conn.Open();
+                cmd.CommandText = string.Format("Update Manufacturing.`Plan Log` Set WarpProcessed=1 Where Warp_MO in ('{0}')", warpmo);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally { conn.Close(); conn.Dispose(); }
+
+        }
+        internal static void UpdatePlanLogWarpToUnProcessed(string warpmo)
         {
             MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
             MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };

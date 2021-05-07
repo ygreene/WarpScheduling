@@ -27,8 +27,10 @@ namespace WarpScheduling
             foreach (var i in wstyles)
             {
 
-               // Console.WriteLine(WarperID=i.Value);
-               WarperIDWithStyles.Add(new WarpStyles() { WarperID =int.Parse(i.Element("Id").Value) , WarpStyle = i.Element("WarpStyle").Value});
+               // Console.WriteLine(i.Value);
+              //   Console.WriteLine(i.Element("Id").Value);
+              //  Console.WriteLine(i.Element("WarpStyle").Value);
+                WarperIDWithStyles.Add(new WarpStyles() { WarperID =int.Parse(i.Element("Id").Value) , WarpStyle = i.Element("WarpStyle").Value});
             }
             
       

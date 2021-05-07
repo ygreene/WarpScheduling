@@ -32,7 +32,7 @@ namespace WarpScheduling
             WarpBill.FetchWarpBill();
             Warp.FetchPriortizedWarps();  // needs to run this before fetching new warps.  
             Warp.FetchNewWarps();
-           Warper.FetchWarpers();
+            Warper.FetchWarpers();
             WarpCustomers.FetchWarpCustomers();
            // listwarps.ItemsSource = Warp.Warps.OrderBy(w=> w.WarpStyle).ThenBy(w=> w.EarliestDueDate).ThenBy(w=> w.WarpMO);
             cb_Warper.ItemsSource = Warper.Warpers;
