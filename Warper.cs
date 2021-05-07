@@ -13,8 +13,18 @@ namespace WarpScheduling
         public int WarperID { get; set; }
         public string WarperName { get; set; }
         public string  Model { get; set; }
+       public  List <string> WarpStylesIRun { get; set; }
 
 
+        public static int FetchWarperIDFromWarpName(string WarpName)
+        {
+           if (WarpName.Length>0 )
+            {
+                return Warpers.Where(c => c.WarperName == WarpName).ElementAt(0).WarperID;
+            }
+           else
+            { return 0; }
+        }
         public static void FetchWarpers()
         {
             SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.sti };
@@ -29,7 +39,7 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
-                    Warpers.Add(new Warper() { WarperID = reader.GetInt32(0), WarperName = reader.GetString(1), Model = reader.GetString(2) }); 
+                    Warpers.Add(new Warper() { WarperID = reader.GetInt32(0), WarperName = reader.GetString(1), Model = reader.GetString(2) , WarpStylesIRun=WarpStyles.FetchStylesByWarpID(reader.GetInt32(0))}); 
 
                 }
 
