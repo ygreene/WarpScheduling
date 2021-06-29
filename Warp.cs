@@ -164,9 +164,12 @@ namespace WarpScheduling
                 {
                     mywriter.WriteLine(string.Format("Warp '{0}' has been processed at GetPioritizedWarp!", reader.GetString(1)));
                     UpdatePlanLogWarpToProcessed(reader.GetString(1)); // take long time // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
-                    Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = reader.GetInt32(3), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
+                                                                       //  Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = reader.GetInt32(3), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
+
+                    Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = GetRollsOnWarp(reader.GetString(1)), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
                 }
             }
+           
             catch (SqlException ex)
             {
 
@@ -174,6 +177,35 @@ namespace WarpScheduling
             }
             finally { conn.Close(); conn.Dispose(); }
         }
+
+       public static int GetRollsOnWarp( string warpmo)
+        {
+            MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
+            MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
+            MySqlDataReader reader;
+            int x = 0;
+            try
+            {
+                conn.Open();
+                cmd.CommandText = string.Format("SELECT p.Warp_MO, sum(tickets) totaltickets FROM manufacturing.`plan log` p WHere p.Warp_MO = '{0}'; ", warpmo);
+                reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
+
+                while (reader.Read())
+                    {
+                    x = reader.GetInt32(1);
+                }
+                return x;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally { conn.Close(); conn.Dispose(); }
+
+        }
+
+
 
         public static void SavePriority(IEnumerable<Warp> SelectedWarps, int wpmachineid)
         {
