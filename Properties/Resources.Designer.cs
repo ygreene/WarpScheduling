@@ -116,7 +116,7 @@ namespace WarpScheduling.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select Warp_MO,Customer,PriorityNumber, Item, Sum(Tickets) Ticket,DueDate , If(substring(MO_Number,3,1)=&apos;M&apos;,&apos;Market&apos;,&apos;&apos;)ismarket,Notes, MO_Number ,RefFinMO, Single_Double From
         ///manufacturing.`Plan Log`
-        ///Where DueDate&gt; AddDate(CurDate(),Interval -180 Day)
+        ///Where DueDate&gt; AddDate(CurDate(),Interval -360 Day)
         ///Group by Warp_MO, Customer,PriorityNumber, Item,DueDate,If(substring(MO_Number,3,1)=&apos;M&apos;,&apos;Market&apos;,&apos;&apos;),Notes, MO_Number, RefFinMO, Single_Double.
         /// </summary>
         internal static string WpMOCustomer {

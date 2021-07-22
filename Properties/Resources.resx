@@ -149,7 +149,7 @@ Group by a.ItemNumber, a.ComponentItemNumber, ii.ItemDescription, RequiredQuanti
   <data name="WpMOCustomer" xml:space="preserve">
     <value>Select Warp_MO,Customer,PriorityNumber, Item, Sum(Tickets) Ticket,DueDate , If(substring(MO_Number,3,1)='M','Market','')ismarket,Notes, MO_Number ,RefFinMO, Single_Double From
 manufacturing.`Plan Log`
-Where DueDate&gt; AddDate(CurDate(),Interval -180 Day)
+Where DueDate&gt; AddDate(CurDate(),Interval -360 Day)
 Group by Warp_MO, Customer,PriorityNumber, Item,DueDate,If(substring(MO_Number,3,1)='M','Market',''),Notes, MO_Number, RefFinMO, Single_Double</value>
   </data>
 </root>
