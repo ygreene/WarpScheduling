@@ -58,7 +58,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock x:Name="totalTicketsTextBlock" Text="{Binding TotalTickets}" />
+                                    <TextBlock x:Name="totalTicketsTextBlock" Text="{Binding TotalTickets}" Foreground="{Binding Foreground}" />
                                 </Grid>
                                 <Grid x:Name="grid6"  HorizontalAlignment="Left" Margin="320,9,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
                                     <Grid.ColumnDefinitions>

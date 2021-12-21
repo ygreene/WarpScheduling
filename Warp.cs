@@ -9,9 +9,26 @@ using System.Diagnostics;
 using System.Windows;
 using System.ComponentModel;
 using System.IO;
+using System.Drawing;
+using System.Globalization;
+using System.Windows.Media;
 
 namespace WarpScheduling
 {
+    //class SingleDoubleConverter : System.Windows.Data.IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        SolidColorBrush brush = new SolidColorBrush(Colors.Black);
+
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
     class Warp :  INotifyPropertyChanged 
     {
        internal static StreamWriter mywriter = new StreamWriter(@"c:\STIRoot\WarpScheduling");
@@ -44,6 +61,19 @@ namespace WarpScheduling
         public int? WarperID { get; set; }
         public string IsRush { get { return WarpCustomers.CheckForRushedMO(this.WarpMO); } }
        public string SingleDouble { get { return (WarpCustomers.GetSingleDouble(this.WarpMO)=="D"?"Double":""); } }
+        public System.Windows.Media.Brush Foreground
+        {
+            get
+            {
+                if (SingleDouble == "Double")
+                {
+                    return new SolidColorBrush(Colors.Red);
+                }
+                else { return new SolidColorBrush(Colors.Black); }
+              
+
+            }
+        }
         public int ChangesThisWarp { get { return WarpCustomers.GetStyleChanges(this.WarpMO); } }
 
         protected void OnPropertyChanged(string propertyName)
@@ -126,7 +156,7 @@ namespace WarpScheduling
 
                         Console.WriteLine(String.Format("Updating '{0}' to processed", wpmo));
                     //     UpdatePlanLogWarpToProcessed(wpmo); // take long time 
-                        listwarpmo.Add(wpmo);
+                        listwarpmo.Add("'" + wpmo + "'");
                     }
                     else
                     {
@@ -163,15 +193,21 @@ namespace WarpScheduling
 
             try
             {
+                List<string> listwarpmo = new List<string>();
                 conn.Open();
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
-                    mywriter.WriteLine(string.Format("Warp '{0}' has been processed at GetPioritizedWarp!", reader.GetString(1)));
-                    UpdatePlanLogWarpToProcessed(reader.GetString(1)); // take long time // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
+                   // mywriter.WriteLine(string.Format("Warp '{0}' has been processed at GetPioritizedWarp!", reader.GetString(1)));
+                    listwarpmo.Add("'"+ reader.GetString(1) +"'");
+                    //UpdatePlanLogWarpToProcessed(reader.GetString(1)); // take long time // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
                                                                        //  Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = reader.GetInt32(3), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
 
                     Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = GetRollsOnWarp(reader.GetString(1)), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
+                }
+                if (listwarpmo.Count()>0)
+                {
+                    UpdatePlanLogWarpToProcessedAll(string.Join(",", listwarpmo));
                 }
             }
            
@@ -280,7 +316,7 @@ namespace WarpScheduling
             try
             {
                 conn.Open();
-                cmd.CommandText = string.Format("Update Manufacturing.`Plan Log` Set WarpProcessed=1 Where Warp_MO In'{0}'", warpmo);
+                cmd.CommandText = string.Format("Update Manufacturing.`Plan Log` Set WarpProcessed=1 Where Warp_MO In ({0});", warpmo);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
