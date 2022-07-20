@@ -74,6 +74,9 @@
   <Warper Id="1">
     <WarpStyle>WS1064</WarpStyle>
   </Warper>
+  <Warper Id="1">
+    <WarpStyle>WS1065</WarpStyle>
+  </Warper>
 <!--1/4 Count on Warper ID 1 and 2-->
 <Id>1</Id>
 <WarpStyle>WS233</WarpStyle>

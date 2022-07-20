@@ -145,12 +145,12 @@ namespace WarpScheduling
                 while (reader.Read())
                 {
                     wpmo = reader.GetString(0);
-                    //if (reader.GetString(0)=="T26719")
-                    //{
-                    //    Console.WriteLine(wpmo);
-                    //}
-                  //  Console.WriteLine(wpmo);
-                    
+                    if (reader.GetString(0) =="J00233")
+                    {
+                        Console.WriteLine(wpmo);
+                    }
+                    Console.WriteLine(wpmo);
+
                     if (HasWarpBeenProcessed(wpmo) == true)
                     {
 
@@ -160,6 +160,8 @@ namespace WarpScheduling
                     }
                     else
                     {
+                        Console.WriteLine(wpmo);
+
                         Warps.Add(new Warp() { WarpMO = wpmo, WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp = "" });
                     }
                 }

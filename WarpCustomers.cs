@@ -61,6 +61,33 @@ namespace WarpScheduling
             return x.ElementAt(0).SingleDouble;
         }
 
+
+        //public  static void testmysqlsqp()
+        //{
+        //    MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
+        //    MySqlCommand cmd = new MySqlCommand { Connection = conn, CommandType = System.Data.CommandType.StoredProcedure, CommandText= "sp_getwarprk" };
+        //    MySqlDataReader reader;
+        //    try
+        //    {
+        //        conn.Open();
+        //        // cmd.CommandText = string.Format("Update `Plan Log` Set Notes= '{0}' Where Warp_MO='{1}' and PriorityNumber={2};", warpCustomers.Notes, warpCustomers.WarpMO, warpCustomers.Priority);
+        //       reader= cmd.ExecuteReader();
+        //       while (reader.Read())
+        //            {
+
+
+        //        }
+        //    }
+        //    catch (MySqlException ex)
+        //    {
+
+        //        throw ex;
+        //    }
+        //    finally { conn.Close(); conn.Dispose(); }
+        //}
+
+    
+
         private void UpdatePlanLogNotes(WarpCustomers warpCustomers)
         {
             MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
@@ -111,3 +138,4 @@ namespace WarpScheduling
         }
     }
 }
+

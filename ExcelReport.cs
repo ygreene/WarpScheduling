@@ -142,7 +142,7 @@ namespace WarpScheduling
 
                 foreach (var v in x.Take(1))
                 {
-                   // foreach (var i in wp).Take(1)
+                    // foreach (var i in wp).Take(1)
                     {
 
 
@@ -197,7 +197,7 @@ namespace WarpScheduling
                         //                );
                         sheetdata.AppendChild(headerRow);
 
-                        foreach (var z in wp.Where(w => w.WarperID == v.warperid|| w.WarperID==null).OrderBy(w => w.Priority))
+                        foreach (var z in wp.Where(w => w.WarperID == v.warperid || w.WarperID == null).OrderBy(w => w.Priority))
                         {
                             Row mrow = new Row();
                             mrow.Append(new Cell() { DataType = CellValues.String, CellValue = new CellValue(z.SingleDouble), StyleIndex = 4 });

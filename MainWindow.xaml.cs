@@ -25,6 +25,8 @@ namespace WarpScheduling
         internal static MainWindow main;
         public MainWindow()
         {
+
+            
             InitializeComponent();
             MORush.RemoveStatus5MOs();
             MORush.FetchMORushList();
@@ -107,9 +109,12 @@ namespace WarpScheduling
                 listwarps.IsSynchronizedWithCurrentItem = true;
             }
             else
-            { 
-               // listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID ==null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority*-1 ).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
-                    listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenByDescending(w=> w.IsRush).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+            {
+
+                    //IEnumerable<Warp> lwarpsource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle.Trim()) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenByDescending(w => w.IsRush).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    //lwarpsource.Where(c => c.WarpMO == "J00099");
+                    // listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle) && (w.WarperID == x || w.WarperID ==null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority*-1 ).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
+                    listwarps.ItemsSource = Warp.Warps.Where(w => m.Any(r => r == w.WarpStyle.Trim()) && (w.WarperID == x || w.WarperID == null) && !(w.WarpMO.StartsWith("P"))).OrderByDescending(w => w.Priority * -1).ThenByDescending(w=> w.IsRush).ThenBy(w => w.WarpStyle).ThenBy(w => w.EarliestDueDate).ThenBy(w => w.WarpMO);
                     listwarps.IsSynchronizedWithCurrentItem = true;
             }
             }
@@ -138,8 +143,16 @@ namespace WarpScheduling
 
         private void btn_Export_Click(object sender, RoutedEventArgs e)
         {
+            List<string> FirstOnly = new List<string>{ "WS8133", "WS8134", "WS8135", "WS8136", "WS8137", "WS8138", "WS8139", "WS8140", "WS8141", "WS8142", "WS8143", "WS8144", "WS8145", "WS8146", "WS8147", "WS8148", "WS8149", "WS8150", "WS8151", "WS8152", "WS8153", "WS8154", "WS8155", "WS8156", "WS8157", "WS8158", "WS8159", "WS8160", "WS8161", "WS8162", "WS8163", "WS8164", "WS8165", "WS8166", "WS8167", "WS8168", "WS8169", "WS8170" };
+           
+            List<string> NOMIX  = new List<string>{ "WS9031", "WS9040", "WS9041", "WS9042", "WS9043", "WS9044", "WS9045", "WS9046", "WS9047", "WS9048", "WS9049" };
             List<Warp> WarpPriority;
             WarpPriority = Warp.Warps.Where(c => c.Priority > 0).ToList();
+            foreach (var i in WarpPriority.Where(r => NOMIX.Any(x => r.WarpStyle.Contains(x))))
+            { i.Notes += " DO NOT MIX LOTS"; }
+            foreach (var i in WarpPriority.Where(g => FirstOnly.Any(x => g.WarpStyle.Contains(x))))
+            { i.Notes += " RUN ON 1ST-PHILIS TO APPROVE"; }
+
             ExcelReport.CreateSpreadSheet(WarpPriority,"Wpriority.xlsx");
             MessageBox.Show("Priority Exported!");
         }
