@@ -36,6 +36,11 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
+                    if (reader.GetString(0)=="WS1000")
+                    {
+                        Console.WriteLine("Got It");
+
+                    }
                     WarpBills.Add(new WarpBill() { WarpStyle = reader.GetString(0), Component = reader.GetString(1), ComponentDesc = reader.GetString(2) , CompColor=reader.GetString(2)});
 
                 }
@@ -51,7 +56,7 @@ namespace WarpScheduling
         public static string FetchWarpColors(string warpstyle)
         {
             String yarncolors = "";
-            var x = WarpBills.Where(w => w.WarpStyle == warpstyle);
+            var x = WarpBills.Where(w => w.WarpStyle == warpstyle.Trim());
 
             foreach (var i in x )
             {

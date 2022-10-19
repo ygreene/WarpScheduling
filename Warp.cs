@@ -200,7 +200,8 @@ namespace WarpScheduling
                 reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
-                   // mywriter.WriteLine(string.Format("Warp '{0}' has been processed at GetPioritizedWarp!", reader.GetString(1)));
+                    Console.WriteLine(reader.GetString(1));
+                  //  mywriter.WriteLine(string.Format("Warp '{0}' has been processed at GetPioritizedWarp!", reader.GetString(1)));
                     listwarpmo.Add("'"+ reader.GetString(1) +"'");
                     //UpdatePlanLogWarpToProcessed(reader.GetString(1)); // take long time // added this in to update items added to warps after they have been priortized.  So as to not allow MO's back in that have been processed. 
                                                                        //  Warps.Add(new Warp() { Priority = reader.GetInt32(0), WarpMO = reader.GetString(1), WarpStyle = reader.GetString(2), TotalTickets = reader.GetInt32(3), EarliestDueDate = reader.GetDateTime(4), Notes = reader.GetString(5), WarperID = reader.GetInt32(6) });
@@ -274,7 +275,15 @@ namespace WarpScheduling
                     x = string.Format("Insert into dbo.t_WarpingPriority (Priority, Warp_MO, WarpStyle, RollsOnWarp, DueDate, Notes, WarperID) Values({0},'{1}','{2}',{3},'{4}','{5}',{6})", i.Priority, i.WarpMO, i.WarpStyle, i.TotalTickets, i.EarliestDueDate.ToShortDateString(), i.Notes, i.WarperID);
                     cmd.CommandText = x;
                     if (WarpInventory.CheckWarpInventory(i.WarpMO) == false)
-                    { cmd.ExecuteNonQuery(); }
+                    { 
+                        
+                        cmd.ExecuteNonQuery(); 
+                        if (WarpPriorityHistory.IsWarpInWarpPriorityHistoryTable(i.WarpMO)==false)
+                        {
+
+
+                        }
+                    }
                     else
                     { //remove from export}
                         UpdatePlanLogWarpToProcessed(i.WarpMO);
@@ -291,6 +300,8 @@ namespace WarpScheduling
             finally
             { conn.Close(); conn.Dispose(); }
         }
+
+       
         private static void UpdatePlanLogWarpToProcessed(string warpmo)
         {
             MySqlConnection conn = new MySqlConnection { ConnectionString = Properties.Settings.Default.mysql };
