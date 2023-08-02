@@ -19,7 +19,7 @@
             </Style.Triggers>
 
         </Style>
-        <local:IntToNullValueConverter x:Key="IntToNullValueConverter"/>
+        <local:IntToNullValueConverter x:Key="IntToNullValueConverter"/> 
     </Window.Resources>
 
 

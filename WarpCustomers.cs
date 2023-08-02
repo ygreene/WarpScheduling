@@ -58,7 +58,9 @@ namespace WarpScheduling
         internal static string GetSingleDouble(string warpMO)
         {
             var x = WrpCustomers.Where(c => c.WarpMO == warpMO);
-            return x.ElementAt(0).SingleDouble;
+            if (x.Count() > 0)
+            { return x.ElementAt(0).SingleDouble; }
+            else { return "S"; }
         }
 
 

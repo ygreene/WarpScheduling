@@ -33,6 +33,8 @@ namespace WarpScheduling
     {
        internal static StreamWriter mywriter = new StreamWriter(@"c:\STIRoot\WarpScheduling");
 
+        public static List<Warp> RecWarps = new List<Warp>();
+
         public static List<Warp> Warps = new List<Warp>();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -94,6 +96,52 @@ namespace WarpScheduling
 
         }
 
+
+
+        internal static void FetchRecWarps()
+        {
+            
+            SqlConnection conn = new SqlConnection { ConnectionString = Properties.Settings.Default.fsconn };
+            SqlCommand cmd = new SqlCommand { Connection = conn, CommandType = System.Data.CommandType.Text };
+            SqlDataReader reader;
+            try
+            {
+                conn.Open();
+                cmd.CommandText = string.Format("Select h.MONumber,l.MOLineStatus From dbo.FS_MOHeader h inner join dbo.FS_MOLine l on h.MOHeaderKey =l.MOHeaderKey " +
+                                                "Inner Join dbo.FS_Item i on l.ItemKey = i.ItemKey " +
+                                                "Where ItemNumber Like 'WS%' and l.MOLineStatus > 4");
+
+                reader =cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
+                while (reader.Read())
+                {
+                    RecWarps.Add(new Warp() { WarpMO = reader.GetString(0) });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+                { 
+                conn.Close();
+                conn.Dispose();
+            }
+
+        }
+
+
+        internal static bool IsWarpInFS(string warpmofilter)
+        {
+            var j = RecWarps.Where(c => c.WarpMO == warpmofilter);
+            //if (j.) { return false; }
+            if (j.Count()>0)
+            { return true; }
+            else
+            { return false; }
+
+        }
+
         internal static bool HasWarpBeenProcessed(string warpmofilter)
         {
             bool isprocessed = false;
@@ -145,17 +193,24 @@ namespace WarpScheduling
                 while (reader.Read())
                 {
                     wpmo = reader.GetString(0);
-                    if (reader.GetString(0) =="J00233")
+                    if (reader.GetString(0) =="A54594")
                     {
                         Console.WriteLine(wpmo);
                     }
                     Console.WriteLine(wpmo);
 
+                    //if (Warp.IsWarpInFS(wpmo) == true)
+                    //{
+
+                    //    listwarpmo.Add("'" + wpmo + "'");
+                    //}
+                    //else
+                    //{ Warps.Add(new Warp() { WarpMO = wpmo, WarpStyle = reader.GetString(1), TotalTickets = reader.GetInt32(2), EarliestDueDate = reader.GetDateTime(3), YarnColorsOfWarp = "" }); }
                     if (HasWarpBeenProcessed(wpmo) == true)
                     {
 
                         Console.WriteLine(String.Format("Updating '{0}' to processed", wpmo));
-                    //     UpdatePlanLogWarpToProcessed(wpmo); // take long time 
+                        //     UpdatePlanLogWarpToProcessed(wpmo); // take long time 
                         listwarpmo.Add("'" + wpmo + "'");
                     }
                     else
@@ -167,7 +222,7 @@ namespace WarpScheduling
                 }
                 if (listwarpmo.Count()>0)
                 { 
-                UpdatePlanLogWarpToProcessedAll(string.Join("','",listwarpmo));
+                UpdatePlanLogWarpToProcessedAll(string.Join(",",listwarpmo));
                 }
             }
             catch (Exception ex)
@@ -277,12 +332,8 @@ namespace WarpScheduling
                     if (WarpInventory.CheckWarpInventory(i.WarpMO) == false)
                     { 
                         
-                        cmd.ExecuteNonQuery(); 
-                        if (WarpPriorityHistory.IsWarpInWarpPriorityHistoryTable(i.WarpMO)==false)
-                        {
-
-
-                        }
+                        cmd.ExecuteNonQuery();
+                      
                     }
                     else
                     { //remove from export}
@@ -290,6 +341,7 @@ namespace WarpScheduling
                     }
                     
                 }
+                SaveWarpHis(SelectedWarps);
                 MessageBox.Show("Priority Saved!");
             }
             catch (Exception)
@@ -299,6 +351,22 @@ namespace WarpScheduling
             }
             finally
             { conn.Close(); conn.Dispose(); }
+        }
+
+        private static void SaveWarpHis(IEnumerable<Warp> selwarps)
+        {
+
+            foreach (var i in selwarps.Where(c => c.WarperID != null))
+            {
+                if (WarpPriorityHistory.IsWarpInWarpPriorityHistoryTable(i.WarpMO) == false)
+                {
+                    //save data in history table
+                    if (WarpPriorityHistory.SaveHistory(i) == 0)
+                    {
+                        MessageBox.Show(String.Format("Warp '{0}' did not save in History Table!", i.WarpMO));
+                    }
+                }
+            }
         }
 
        

@@ -28,6 +28,8 @@ namespace WarpScheduling
 
             
             InitializeComponent();
+           // Warp.FetchRecWarps();
+            WarpPriorityHistory.FetchWarpHistory();
             MORush.RemoveStatus5MOs();
             MORush.FetchMORushList();
             WarpStyles.fetchWarperStyles();
@@ -150,9 +152,9 @@ namespace WarpScheduling
             WarpPriority = Warp.Warps.Where(c => c.Priority > 0).ToList();
          
             foreach (var i in WarpPriority.Where(r => NOMIX.Any(x => r.WarpStyle.Contains(x))))
-            { i.Notes += " DO NOT MIX LOTS"; }
+            { i.Notes += " SUPERVISOR TO APPROVE"; }
             foreach (var i in WarpPriority.Where(g => FirstOnly.Any(x => g.WarpStyle.Contains(x))))
-            { i.Notes += " RUN ON 1ST-PHILIS TO APPROVE"; }
+            { i.Notes += " SUPERVISOR TO APPROVE"; }
 
             ExcelReport.CreateSpreadSheet(WarpPriority,"Wpriority.xlsx");
             MessageBox.Show("Priority Exported!");
